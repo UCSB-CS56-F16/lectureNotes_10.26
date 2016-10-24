@@ -84,6 +84,19 @@ public class TestArithmeticTokenizer {
                           tokenizeNoException("12"));
     }
 
+    @Test
+    public void testBigFatUglyTestFromLecture() {
+        assertArrayEquals(new Token[] {
+		tf.makePlusToken(),
+		tf.makeMinusToken(),
+		tf.makePlusToken(),
+		tf.makeIntToken(12),
+		tf.makePlusToken()
+	    },
+                          tokenizeNoException("+-+12+"));
+    }
+
+    
     // BEGIN TESTS FOR INVALID INPUTS
     @Rule
     public ExpectedException thrown = ExpectedException.none();

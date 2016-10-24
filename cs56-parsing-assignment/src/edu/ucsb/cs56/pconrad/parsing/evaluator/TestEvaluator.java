@@ -63,8 +63,9 @@ public class TestEvaluator {
     @Test
     public void testPlus() {
 	assertEquals(8,
-		     evaluateNoException(af.makePlusNode(af.makeLiteral(6),
-                                                         af.makeLiteral(2))));
+		     evaluateNoException
+		     (af.makePlusNode(af.makeLiteral(6),
+				      af.makeLiteral(2))));
     }
 
     @Test
