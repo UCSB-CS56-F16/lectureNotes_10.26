@@ -1,3 +1,6 @@
 public class Token {
-    // stub
+
+
+    @Override
+    public int hashCode() { return toString().hashCode(); }
 }
