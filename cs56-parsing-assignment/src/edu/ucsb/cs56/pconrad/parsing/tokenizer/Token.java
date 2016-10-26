@@ -12,6 +12,15 @@ public class Token {
 	return s.hashCode();
     }
 
+    @Override
+    public boolean equals(Object obj)    {
+	
+	if (obj == null) return false;
+	if (getClass() != obj.getClass()) return false;
+	return true;
+    }
+
+
     public <A, T extends Throwable> A accept(TokenVisitor<A, T> visitor) throws T {
 
 	/* TODO: Fix me */

@@ -14,8 +14,8 @@ public class Tokenizer {
 
 	FiniteStateAutomaton fsa = new FiniteStateAutomaton();
 	fsa.addState(0);
-	fsa.addState(1, new IntTokenMaker());
-	fsa.addState(2, new PlusTokenMaker());
+	fsa.addState(1, s -> new IntToken(s) );
+	fsa.addState(2, s -> new PlusToken() );
 	fsa.addState(3, new MinusTokenMaker());
 	fsa.addState(4, new TimesTokenMaker());
 	fsa.addState(5, new DivideTokenMaker());
