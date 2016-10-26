@@ -1,6 +1,13 @@
 public class Token {
 
-
+    @Override public String toString() {
+	return "Token";
+    }
+    
     @Override
-    public int hashCode() { return toString().hashCode(); }
+    public int hashCode() {
+	String s = this.toString();
+	return s.hashCode();
+    }
+	
 }

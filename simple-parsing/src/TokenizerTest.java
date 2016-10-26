@@ -5,38 +5,33 @@ import org.junit.Test;
 
 public class TokenizerTest {
 
-    // begin instance variables
-    private final TokenFactory tf;
-    // end instance variables
-
-    public TokenizerTest() {
-        tf = new TokenFactory();
+    @Test
+    public void testOneErrorToken() {
+        assertArrayEquals(new Token[] { new ErrorToken("$") },
+                          Tokenizer.tokenize("$"));
     }
 
     @Test
-    public void testOneToken() {
-        assertArrayEquals(new Token[] { tf.makePlusToken() },
-                          Tokenizer.tokenize("+"));
+    public void testSingleDigitIntToken() {
+        assertArrayEquals(new Token[] { new IntToken("0") },
+                          Tokenizer.tokenize("0"));
+    }
+
+
+    @Test
+    public void testTwoDigitIntToken() {
+        assertArrayEquals(new Token[] { new IntToken("12") },
+                          Tokenizer.tokenize("12"));
     }
 
     @Test
-    public void testTwoToken() {
+    public void testTwoPlusTwo() {
         assertArrayEquals(new Token[] {
-		tf.makePlusToken(),
-		tf.makePlusToken()
+		new IntToken("2"),
+		new PlusToken(),
+		new IntToken("2")
 	    },
-	    Tokenizer.tokenize("++"));
+	    Tokenizer.tokenize("2+2"));
     }
-
-   @Test
-    public void testThreeTokens() {
-        assertArrayEquals(new Token[] {
-		tf.makePlusToken(),
-		tf.makeIntToken(42),		
-		tf.makePlusToken()
-	    },
-	    Tokenizer.tokenize("+42+"));
-    }
-
     
 }
