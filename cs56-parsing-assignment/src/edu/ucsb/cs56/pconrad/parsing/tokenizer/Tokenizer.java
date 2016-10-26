@@ -1,50 +1,86 @@
 package edu.ucsb.cs56.pconrad.parsing.tokenizer;
 
-import java.util.*;
+import java.util.ArrayList;
 
-/**
- * Relatively generic tokenizer code, which can tokenize different
- * languages depending on the provided parameters to the constructor.
- * Assumes that whitespace can be used to separate tokens, but whitespace
- * in and of itself is not significant (therefore, whitespace has no
- * corresponding token).  Also tied closely to the <code>CharToken</code>
- * class; when the tokenizer recognizes a specified character,
- * it will create an instance of the <code>CharToken</code> class containing
- * the recognized character.  Internally uses the State pattern.
- * @see edu.ucsb.cs56.pconrad.parsing.tokenizer.CharToken
- */
 public class Tokenizer {
-    // begin instance variables
+
     private final String input;
-    private final Set<Character> recognizedTokens;
-    // end instance variables
 
-    /**
-     * @param input The input string to tokenize
-     * @param recognizedTokens The characters which should be treated as tokens
-     */
-    public Tokenizer(final String input,
-		     final Set<Character> recognizedTokens) {
+    public Tokenizer(String input) {
 	this.input = input;
-	this.recognizedTokens = recognizedTokens;
+    }
+    
+    public static FiniteStateAutomaton makeFSA() {
+
+	FiniteStateAutomaton fsa = new FiniteStateAutomaton();
+	fsa.addState(0);
+	fsa.addState(1, new IntTokenMaker());
+	fsa.addState(2, new PlusTokenMaker());
+	fsa.addState(3, new MinusTokenMaker());
+	fsa.addState(4, new TimesTokenMaker());
+	fsa.addState(5, new DivideTokenMaker());
+
+	// Making all of these little TokenMaker classes is getting tedious.
+	// Another way is with anonymous classes
+	
+	fsa.addState(6, new TokenMaker() {
+		public Token makeToken(String s) {
+		    return new LParenToken();
+		}		
+	    } );
+
+	// An even better way is a LambdaFunction
+	
+	fsa.addState(7, s -> new RParenToken());
+
+	fsa.addTransition(' ',0,0);
+	fsa.addTransition('\t',0,0);
+	fsa.addTransition('\n',0,0);
+	fsa.addTransition('\r',0,0);
+		
+	for (char c='0'; c<='9'; c++) {
+	    fsa.addTransition(c,0,1);
+	    fsa.addTransition(c,1,1);
+	}
+	fsa.addTransition('+',0,2);
+	fsa.addTransition('-',0,3);
+	fsa.addTransition('*',0,4);
+	fsa.addTransition('/',0,5);
+	fsa.addTransition('(',0,6);
+	fsa.addTransition(')',0,7);
+
+	return fsa;
     }
 
-    /**
-     * Actually tokenizes the input string, which was specified in the constructor.
-     * @return The tokens corresponding to the input string
-     * @throws TokenizerException If the input string couldn't be tokenized.
-     *         This could happen, for instance, if the input string contained
-     *         a non-whitespace character which was not in <code>recognizedTokens</code>.
-     */
-    public ArrayList<Token> tokenize() throws TokenizerException {
-	final ArrayList<Token> tokens = new ArrayList<Token>();
-	TokenizerState state = new InitialTokenizerState(recognizedTokens);
-	for(int pos = 0; pos < input.length(); pos++) {
-	    final TokenizerStateResult cur = state.nextState(input.charAt(pos));
-	    tokens.addAll(cur.getTokens());
-	    state = cur.getNextState();
+
+    public ArrayList<Token> tokenize () {
+	FiniteStateAutomaton fsa = makeFSA();
+	fsa.setInput(input);
+	    
+	ArrayList<Token> tokens = new ArrayList<Token>(); 
+
+	Token t = fsa.nextToken();
+	while (t != null) {
+	    tokens.add(t);
+	    t = fsa.nextToken();
 	}
-	tokens.addAll(state.atInputEnd());
+
 	return tokens;
+
+
+	
     }
-} // Tokenizer
+    
+    public static Token [] tokenizeToArray (String input) {
+	Tokenizer t = new Tokenizer(input);
+	ArrayList<Token> tokens = t.tokenize();
+	return tokens.toArray(new Token [tokens.size()]);
+    }
+
+    public static void main(String [] args) {
+	String input="2+2";
+	if (args.length>0) input = args[0];
+	System.out.println( new Tokenizer(input).tokenize());
+    }
+    
+}

@@ -19,7 +19,7 @@ public class DefaultInterpreterInterface extends InterpreterInterface {
 	new DefaultInterpreterInterface();
     
     public ArrayList<Token> tokenize(final String input) throws TokenizerException {
-	return new ArithmeticTokenizer(input).tokenize();
+	return new Tokenizer(input).tokenize();
     }
     
     public AST parse(final ArrayList<Token> tokens) throws ParserException {

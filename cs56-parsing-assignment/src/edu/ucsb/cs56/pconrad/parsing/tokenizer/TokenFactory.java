@@ -1,15 +1,13 @@
 package edu.ucsb.cs56.pconrad.parsing.tokenizer;
 
-/**
- * Decouples token constructors and underlying class hierarchy from
- * how tokens behave.  Only used in the test suite for the tokenizer.
- */
-public interface TokenFactory {
-    public Token makeLeftParenToken();
-    public Token makeRightParenToken();
-    public Token makePlusToken();
-    public Token makeMinusToken();
-    public Token makeTimesToken();
-    public Token makeDivToken();
-    public Token makeIntToken(int value);
+public class TokenFactory {
+
+    public Token makePlusToken() {
+	return new Token();
+    }
+
+
+    public Token makeIntToken(int value) {
+	return new Token();
+    }
 }
