@@ -14,7 +14,10 @@ Here is the Finite State Automaton that corresponds to this code:
 <img src="https://docs.google.com/drawings/d/1d1p1M9JS6Xkx7Ug0p86N3arTUZvk-NgIQo6QIj8ZJS0/pub?w=1212&amp;h=690">
 
 
-# Provided Components #
+
+# Notes on the Sample Arithmetic Expression Interpreter
+
+(NOTE: Some of the material below was adapted from a project description originally by Kyle Dewey.)
 
 The starter code you'll be given consists of a tokenizer, parser, and interpreter for a simple arithmetic expression language.
 
@@ -63,12 +66,9 @@ The specific technique we will use is that of [Extended Backus-Naur Form (EBNF)]
 This technique, along with its particular application to our arithmetic expression language, is subsequently described.
 
 In EBNF, languages are broken up into **terminals** and **non-terminals**.
-To understand what these terms mean, consider the AST for `1+2` again, repeated below for convenience:
 
-![1+2](IMAGES/1+2.png)
-
-In this AST, `1` and `2` would be terminals, because they are leaves in the tree (that is, they *terminate* paths through the tree).
-In contrast, `+` would be a non-terminal, as it acts as an internal node in the tree (that is, non-terminals *do not terminate* paths through the tree).
+* **terminals** correspond to actual symbols that appear in the language being described
+* **non-terminals** are symbols that represent larger units in the language, for example an entire expression or part of an expression.
 
 A relatively simple EBNF description of a parser that could handle `1+2` is shown below:
 
