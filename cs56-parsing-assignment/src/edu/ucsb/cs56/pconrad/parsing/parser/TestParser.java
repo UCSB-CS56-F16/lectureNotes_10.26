@@ -3,7 +3,7 @@ package edu.ucsb.cs56.pconrad.parsing.parser;
 import edu.ucsb.cs56.pconrad.parsing.tokenizer.*;
 import edu.ucsb.cs56.pconrad.parsing.syntax.*;
 
-import static edu.ucsb.cs56.pconrad.parsing.DefaultInterpreterInterface.DEFAULT_INTERPRETER_INTERFACE;
+import static edu.ucsb.cs56.pconrad.parsing.DefaultInterpreterInterface.DEFAULT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -14,40 +14,15 @@ import org.junit.rules.ExpectedException;
 import java.io.IOException;
 
 /**
- * Tests the code in <code>Parser</code>.
- * Specifically, this ensures that we properly go from lists of <code>Token</code>s
- * to <code>AST</code>s.
- * @see edu.ucsb.cs56.pconrad.parsing.parser.Parser
- * @see edu.ucsb.cs56.pconrad.parsing.tokenizer.Token
- * @see edu.ucsb.cs56.pconrad.parsing.syntax.AST
- */
+ Tests going from a string to an AST
+ */ 
+
 public class TestParser {
-    // begin instance variables
-    private final ASTFactory af;
-    // end instance variables
-
-    public TestParser() {
-        af = DefaultASTFactory.DEFAULT;
-    }
-
-    /**
-     * Convenience method to tokenize and parse the given input
-     */
     public static AST parse(final String input)
 	throws TokenizerException, ParserException {
-	return DEFAULT_INTERPRETER_INTERFACE.tokenizeAndParse(input);
+	return DEFAULT.parse(DEFAULT.tokenize(input));
     }
 
-    /**
-     * Like <code>parse</code>, but it does not throw any annotated
-     * exceptions.  This is to avoid repeatedly annotating tests to
-     * throw exceptions.  Internally, if tokenizing or parsing
-     * <code>input</code> throws either a <code>TokenizerException</code>
-     * or a <code>ParserException</code>, this will trigger test failure.
-     * @see edu.ucsb.cs56.pconrad.parsing.parser.Parser#parse
-     * @see edu.ucsb.cs56.pconrad.parsing.tokenizer.TokenizerException
-     * @see edu.ucsb.cs56.pconrad.parsing.parser.ParserException
-     */
     public static AST parseNoException(final String input) {
         AST retval = null;
 
@@ -65,57 +40,63 @@ public class TestParser {
     
     @Test
     public void testParseNum() {
-        assertEquals(af.makeLiteral(42),
+        assertEquals(new Literal(42),
                      parseNoException("42"));
     }
 
-    /*
     @Test
     public void testParseAdd() {
-        assertEquals(af.makePlusNode(af.makeLiteral(1),
-                                     af.makeLiteral(2)),
+        assertEquals(new Binop(new Literal(1),
+                               Plus.PLUS,
+                               new Literal(2)),
                      parseNoException("1 + 2"));
     }
 
     @Test
     public void testParseParensLiteral() {
-        assertEquals(af.makeLiteral(1),
+        assertEquals(new Literal(1),
                      parseNoException("(1)"));
     }
     
     @Test
     public void testParseParensBinop() {
-        assertEquals(af.makePlusNode(af.makeLiteral(1),
-                                     af.makeLiteral(2)),
+        assertEquals(new Binop(new Literal(1),
+                               Plus.PLUS,
+                               new Literal(2)),
                      parseNoException("(1 + 2)"));
     }
 
     @Test
     public void testPrecedenceHigherFirst() {
-        assertEquals(af.makePlusNode(af.makeTimesNode(af.makeLiteral(1),
-                                                      af.makeLiteral(2)),
-                                     af.makeLiteral(3)),
+        assertEquals(new Binop(new Binop(new Literal(1),
+                                         Times.TIMES,
+                                         new Literal(2)),
+                               Plus.PLUS,
+                               new Literal(3)),
                      parseNoException("1 * 2 + 3"));
     }
 
     @Test
     public void testPrecedenceParensApplyRight() {
-        assertEquals(af.makeTimesNode(af.makeLiteral(1),
-                                      af.makePlusNode(af.makeLiteral(2),
-                                                      af.makeLiteral(3))),
+        assertEquals(new Binop(new Literal(1),
+                               Times.TIMES,
+                               new Binop(new Literal(2),
+                                         Plus.PLUS,
+                                         new Literal(3))),
                      parseNoException("1 * (2 + 3)"));
     }
 
     @Test
     public void testUnaryMinusLiteral() {
-	assertEquals(af.makeUnaryMinusNode(af.makeLiteral(42)),
+	assertEquals(new UnaryMinus(new Literal(42)),
 		     parseNoException("-42"));
     }
 
     @Test
     public void testUnaryMinusNonMinusBinop() {
-	assertEquals(af.makePlusNode(af.makeLiteral(2),
-                                     af.makeUnaryMinusNode(af.makeLiteral(5))),
+	assertEquals(new Binop(new Literal(2),
+			       Plus.PLUS,
+			       new UnaryMinus(new Literal(5))),
 		     parseNoException("2 + -5"));
     }
 
@@ -140,13 +121,11 @@ public class TestParser {
         throws TokenizerException, ParserException {
         parseExpectFailure("5 +");
     }
-
+    
     @Test
     public void testMissingSecondOperandInParens() 
         throws TokenizerException, ParserException {
         parseExpectFailure("(5 +)");
     }
-
-    */
 } // TestParser
 

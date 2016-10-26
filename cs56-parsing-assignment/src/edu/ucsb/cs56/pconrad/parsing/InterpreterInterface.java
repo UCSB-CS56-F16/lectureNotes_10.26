@@ -7,13 +7,6 @@ import edu.ucsb.cs56.pconrad.parsing.evaluator.EvaluatorException;
 
 import java.util.ArrayList;
 
-/**
- * Defines an interface around the main components of the interpreter.
- * Note that this is an interface in the more general sense as opposed to
- * the Java-specific meaning; this is specified as a Java abstract class
- * as opposed to a Java interface, on account of the fact that there are
- * non-abstract methods present.
- */
 public abstract class InterpreterInterface {
     public abstract ArrayList<Token> tokenize(String input) throws TokenizerException;
     public abstract AST parse(ArrayList<Token> tokens) throws ParserException;

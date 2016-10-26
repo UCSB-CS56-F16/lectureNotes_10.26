@@ -1,10 +1,5 @@
 package edu.ucsb.cs56.pconrad.parsing.syntax;
 
-/**
- * Represents binary operations, e.g., 1+2, 5*7, and so on.
- * The actual operator in play is represented by the separate
- * Operator interface.
- */
 public class Binop implements AST {
     // begin instance variables
     private final AST left;
@@ -12,11 +7,6 @@ public class Binop implements AST {
     private final AST right;
     // end instance variables
 
-    /**
-     * @param left The left child of this AST node
-     * @param op The operator present at this AST node
-     * @param right The right child of this AST node
-     */
     public Binop(final AST left,
 		 final Operator op,
 		 final AST right) {
@@ -25,6 +15,8 @@ public class Binop implements AST {
         this.right = right;
     }
 
+    
+    
     public boolean equals(final Object other) {
         if (other instanceof Binop) {
             final Binop otherOp = (Binop)other;
@@ -42,10 +34,6 @@ public class Binop implements AST {
 		right.hashCode());
     }
 
-    /**
-     * Returns a string in infix representation.
-     * (e.g., "(1 + 2)")
-     */
     public String toString() {
 	return ("(" + left.toString() +
 		" " + op.toString() +
@@ -53,11 +41,8 @@ public class Binop implements AST {
 		")");
     }
 
-    /**
-     * Calls <code>visitor</code>'s <code>visitBinop</code> method, using the parameters
-     * passed to this node's constructor as arguments.
-     */
-    public <A, T extends Throwable> A accept(final ASTVisitor<A, T> visitor) throws T {
-	return visitor.visitBinop(left, op, right);
-    }
+    public AST getLeft() { return left; }
+    public Operator getOperator() { return op; }
+    public AST getRight() { return right; }
+
 } // Binop

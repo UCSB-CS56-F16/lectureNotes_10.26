@@ -23,4 +23,5 @@ public class IntToken extends Token {
 	return other.value==this.value;
     }
 
+    public int getValue() { return this.value; }
 }

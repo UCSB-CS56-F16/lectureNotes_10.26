@@ -12,17 +12,6 @@ import java.util.*;
 public class Parser {
     // BEGIN CONSTANTS
 
-    public static final Map<Token, Operator> PLUS_MINUS =
-	new HashMap<Token, Operator>() {{
-	    put(new PlusToken(), Plus.PLUS);
-	    put(new MinusToken(), Minus.MINUS);
-	}};
-    
-    public static final Map<Token, Operator> TIMES_DIV =
-	new HashMap<Token, Operator>() {{
-	    put(new TimesToken(), Times.TIMES);
-	    put(new DivideToken(), Div.DIV);
-	}};
 
     public static final Token LEFT_PAREN_TOKEN = new LParenToken();
     public static final Token RIGHT_PAREN_TOKEN = new RParenToken();
@@ -45,55 +34,6 @@ public class Parser {
 	this.input = input;
     }
 
-    /**
-     * <code>TokenVisitor</code> specific for parsing in <code>primary</code> expressions,
-     * according to our grammar for arithmetic expressions.  This is per the usual definition
-     * of the Visitor pattern.  This is intentionally defined
-     * as an inner class within <code>Parser</code>.  This gives the class access to
-     * all the methods within <code>Parser</code>, without making those methods <code>public</code>.
-     * If this had been defined as a separate class, it would be necessary to make the methods
-     * on <code>Parser</code> <code>public</code>, or else <code>PrimaryTokenVisitor</code>
-     * would have no way of accessing them.  Considering that the methods are very specific
-     * to our particular grammar, and that they reek of implementation detail, it is more
-     * appropriate to leave these methods <code>private</code>.
-     */
-    
-    private class PrimaryTokenVisitor implements TokenVisitor<ParseResult<AST>, ParserException> {
-	// begin instance variables
-	private final int startPos;
-	// end instance variables
-
-	public PrimaryTokenVisitor(final int startPos) {
-	    this.startPos = startPos;
-	}
-	
-	public ParseResult<AST> visitIntToken(final int value) throws ParserException {
-	    return new ParseResult<AST>(new Literal(value), startPos + 1);
-	}
-	
-	public ParseResult<AST> visitLParenToken() throws ParserException {
-	    final ParseResult<AST> nestedExp = parseExpression(startPos + 1);
-	    final int nextPos = nestedExp.getNextPos();
-	    if (tokenAt(nextPos).equals(RIGHT_PAREN_TOKEN)) {
-		return new ParseResult<AST>(nestedExp.getResult(),
-					    nextPos + 1);
-	    } else {
-		throw new ParserException("Expected ')'");
-	    }
-	}
-
-	public ParseResult<AST> visitMinusToken() throws ParserException {
-	    final ParseResult<AST> negatedExp = parsePrimary(startPos + 1);
-	    return new ParseResult<AST>(new UnaryMinus(negatedExp.getResult()),
-					negatedExp.getNextPos());
-	}
-
-	public ParseResult<AST> visitCharToken(char value) throws ParserException {
-	    /* TODO: FIX ME */
-	    return null;
-	} 
-	
-    } // PrimaryTokenVisitor
 
 
     /**
@@ -102,11 +42,33 @@ public class Parser {
      * @param pos The position where to start parsing from
      */
     
-    private ParseResult<AST> parsePrimary(final int pos) throws ParserException {
-	return tokenAt(pos).accept(new PrimaryTokenVisitor(pos));
-    } // parsePrimary
-    
 
+    private ParseResult<AST> parsePrimary(final int pos) throws ParserException {
+	final Token firstToken = tokenAt(pos);
+	
+	if (firstToken.equals(LEFT_PAREN_TOKEN)) {
+	    final ParseResult<AST> nestedExp = parseExpression(pos + 1);
+	    final int nextPos = nestedExp.getNextPos();
+	    if (tokenAt(nextPos).equals(RIGHT_PAREN_TOKEN)) {
+		return new ParseResult<AST>(nestedExp.getResult(),
+					    nextPos + 1);
+	    } else {
+		throw new ParserException("Expected ')'");
+	    }
+	} else if (firstToken.equals(MINUS_TOKEN)) {
+	    final ParseResult<AST> nestedExp = parsePrimary(pos + 1);
+	    return new ParseResult<AST>(new UnaryMinus(nestedExp.getResult()),
+					nestedExp.getNextPos());
+	} else if (firstToken instanceof IntToken) {
+	    return new ParseResult<AST>(new Literal(((IntToken)firstToken).getValue()),
+					pos + 1);
+	} else {
+	    throw new ParserException("Expected primary expression; got: " +
+				      firstToken.toString());
+	}
+    }
+
+    
     private ParseResult<Operator> parsePlusMinus(final int pos) throws ParserException {
 	final Token tokenHere = tokenAt(pos);
 	if (tokenHere.equals(PLUS_TOKEN)) {
@@ -116,9 +78,9 @@ public class Parser {
 	} else {
 	    throw new ParserException("Expected + or - operator ");
 	}
-
+	
     }
-
+    
     private ParseResult<Operator> parseTimesDiv(final int pos) throws ParserException {
 	final Token tokenHere = tokenAt(pos);
 	if (tokenHere.equals(TIMES_TOKEN)) {
@@ -129,7 +91,7 @@ public class Parser {
 	    throw new ParserException("Expected * or / operator ");
 	}
     }
-
+    
     // BEGIN CODE FOR MULTIPLICATIVE AND ADDITIVE EXPRESSIONS
     /**
      * As with <code>PrimaryTokenVisitor</code>, this is defined as an inner class
