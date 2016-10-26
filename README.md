@@ -2,7 +2,7 @@
 
 Lecture notes for 10.26
 
-In the directory cs56-parsing-assignment, we have some "legacy code" for a parser.  
+In the directory [cs56-parsing-assignment](cs56-parsing-assignment), we have some "legacy code" for a parser.  
 
 It parses and evaluates arithmetic expressions.
 
