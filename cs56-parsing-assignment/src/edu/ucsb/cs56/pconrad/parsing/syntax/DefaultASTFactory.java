@@ -6,6 +6,7 @@ package edu.ucsb.cs56.pconrad.parsing.syntax;
  * decoupled from the actual AST constructors.
  */
 public class DefaultASTFactory implements ASTFactory {
+
     // begin constants
     public static final DefaultASTFactory DEFAULT = new DefaultASTFactory();
     // end constants

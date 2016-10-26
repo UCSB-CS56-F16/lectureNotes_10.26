@@ -15,7 +15,8 @@ import java.util.ArrayList;
  * edu.ucsb.cs56.pconrad.parsing.evaluator.
  */
 public class DefaultInterpreterInterface extends InterpreterInterface {
-    public static final DefaultInterpreterInterface DEFAULT =
+    
+    public static final DefaultInterpreterInterface DEFAULT_INTERPRETER_INTERFACE =
 	new DefaultInterpreterInterface();
     
     public ArrayList<Token> tokenize(final String input) throws TokenizerException {
