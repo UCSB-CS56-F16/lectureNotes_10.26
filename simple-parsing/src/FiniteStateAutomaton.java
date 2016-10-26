@@ -131,10 +131,11 @@ public class FiniteStateAutomaton {
 	State nextState = currState.nextState.get(this.input.charAt(this.pos));
 
 	if (nextState == null) {
-	    // No transition for first character.   So emit an ErrorToken and move past it
-	    Token retVal = new ErrorToken("" + this.input.charAt(this.pos));
+	    // No transition for first character.  Emit error token.
+	    String s = "" + this.input.charAt(this.pos);
+	    Token retVal = new ErrorToken(s);
 	    this.pos++;
-	    return retVal;
+	    return retVal;			    
 	}
 
 	accumulatedToken += this.input.charAt(this.pos);
@@ -153,11 +154,11 @@ public class FiniteStateAutomaton {
 	}
 
 	if (currState.tm != null) {
-	    return currState.tm.makeToken(accumulatedToken);
+	    return currState.tm.makeToken(accumulatedToken.trim());
 	}
 
-	if (!accumulatedToken.equals("")) {
-	    return new ErrorToken(accumulatedToken);
+	if (!accumulatedToken.trim().equals("")) {
+	    return new ErrorToken(accumulatedToken.trim());
 	}
 	
 	return null;

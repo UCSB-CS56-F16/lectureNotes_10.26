@@ -33,5 +33,32 @@ public class TokenizerTest {
 	    },
 	    Tokenizer.tokenize("2+2"));
     }
+
+
+    @Test
+    public void testTwoPlusTwoWithWhiteSpace() {
+        assertArrayEquals(new Token[] {
+		new IntToken("2"),
+		new PlusToken(),
+		new IntToken("2")
+	    },
+	    Tokenizer.tokenize(" 2 + 2 "));
+    }
+
+    @Test
+    public void twoDigitArithmeticMixed() {
+        assertArrayEquals(new Token[] {
+		new IntToken("12"),
+		new PlusToken(),
+		new IntToken("34"),
+		new TimesToken(),
+		new IntToken("56"),
+		new MinusToken(),
+		new IntToken("78"),
+		new DivideToken(),
+		new IntToken("90"),
+	    },
+	    Tokenizer.tokenize(" 12  + 34*56 -78/90 "));
+    }
     
 }

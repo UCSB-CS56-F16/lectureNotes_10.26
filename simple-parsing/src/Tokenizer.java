@@ -24,7 +24,12 @@ public class Tokenizer {
 	// An even better way is a LambdaFunction
 	
 	fsa.addState(7, s -> new RParenToken());
-	
+
+	fsa.addTransition(' ',0,0);
+	fsa.addTransition('\t',0,0);
+	fsa.addTransition('\n',0,0);
+	fsa.addTransition('\r',0,0);
+		
 	for (char c='0'; c<='9'; c++) {
 	    fsa.addTransition(c,0,1);
 	    fsa.addTransition(c,1,1);
