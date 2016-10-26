@@ -61,4 +61,39 @@ public class TokenizerTest {
 	    Tokenizer.tokenize(" 12  + 34*56 -78/90 "));
     }
     
+    @Test
+    public void fullSetNoWhiteSpace() {
+        assertArrayEquals(new Token[] {
+		new IntToken("1234"),
+		new PlusToken(),
+		new TimesToken(),
+		new MinusToken(),
+		new IntToken("5678"),		
+		new DivideToken(),
+		new LParenToken(),
+		new RParenToken(),
+		new IntToken("3333"),		
+	    },
+	    Tokenizer.tokenize("1234+*-5678/()3333"));
+    }
+
+    @Test
+    public void fullSetLotsOfWhiteSpace() {
+        assertArrayEquals(new Token[] {
+		new IntToken("12"),
+		new IntToken("34"),
+		new PlusToken(),
+		new TimesToken(),
+		new MinusToken(),
+		new IntToken("5678"),		
+		new DivideToken(),
+		new LParenToken(),
+		new RParenToken(),
+		new IntToken("3333"),		
+	    },
+	    Tokenizer.tokenize(" 12 34 + *  -   5678  / ( )  3333  "));
+    }
+
+
+
 }
