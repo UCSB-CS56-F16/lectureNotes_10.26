@@ -10,7 +10,8 @@
   <property name="javadoc_absolute_path" location="javadoc"/>
   <property name="public_javadoc_absolute_path" location="../cs56-parsing-assignment-javadoc"/>
   <target name="clean" description="clean up">
-    <delete dir="build"/>
+    <delete dir="build" quiet="true" />
+    <delete dir="javadoc" quiet="true" />
   </target>
   
   <target name="compile" description="compile the code">
@@ -22,7 +23,8 @@
   </target>
 
   <target name="javadoc" depends="compile" description="generate javadoc">
-    <mkdir dir="javadoc"/>
+    <delete quiet="true" dir="javadoc" />
+    <mkdir dir="javadoc" />
     <javadoc destdir="javadoc">
       <fileset dir="src">
 	<include name="**/*.java"/>
@@ -43,6 +45,10 @@
     </copy>
     <echo>
       javadoc copied to ${public_javadoc_absolute_path}/index.html
+      IF that is NOT where you want it to be copied,
+        edit the public_javadoc_absolute_path in your build.xml
+ 
+      ASSUMING THAT DIRECTORY IS A CLONE OF A PUBLIC GITHUB REPO:
       TO PUBLISH: cd into that repo, then git add javadoc;
       git commit -am "update javadoc"; git push origin gh-pages
     </echo>

@@ -16,13 +16,29 @@ import java.util.Scanner;
 
 
 public class Main {
+
+    /**
+       Call on the default interpreter interface to evaluate an expression
+
+       @param input expression to evaluate
+       @return value of expression as an int
+       @throws edu.ucsb.cs56.pconrad.parsing.tokenizer.TokenizerException bad tokens (illegal characters) in input
+       @throws edu.ucsb.cs56.pconrad.parsing.evaluator.EvaluatorException error such as division by zero
+       @throws edu.ucsb.cs56.pconrad.parsing.parser.ParserException syntax error in expression
+     */
+    
     public static int evaluate(final String input)
 	throws TokenizerException, ParserException, EvaluatorException {
 	return DefaultInterpreterInterface.DEFAULT.tokenizeParseAndEvaluate(input);
     }
 
     /**
-     * Returns true if it should exit
+       Determines whether input contained a request to quit the program
+
+       @param input the input from the user to be evalulated
+       @return true if main should exit (as determined by <code>shouldExit</code>
+       @see shouldExit
+
      */
     public static boolean shouldExit(final String input) {
         final String trimmed = input.trim();
@@ -30,7 +46,13 @@ public class Main {
     }
 
     /**
-     * Returns true if it should exit
+       <p>
+       Evaluate the input, catching exceptions as needed, and printing appropriate messages.
+       </p>
+
+       @param input the input from the user to be evalulated
+       @return true if main should exit (as determined by <code>shouldExit</code>
+       @see shouldExit
      */
     public static boolean handleInput(final String input) {
         if (shouldExit(input)) {
