@@ -1,17 +1,27 @@
 package edu.ucsb.cs56.pconrad.parsing.tokenizer;
 
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.Map;
 import java.util.ArrayList;
 
 public class FiniteStateAutomaton {
 
-    private String input = "";
+    public static boolean debug = false;
+
+    private String input = null;
     private int pos = 0;
+    private State currState = null;
+    private State nextState = null;
+    private State startState = null;
+    private String accumulatedToken = "";
+
+    private TreeSet<Character> legalChars = new TreeSet<Character>();
     
     public void setInput(String input) {
 	this.input = input;
 	this.pos = 0;
+	resetToStart();
     }
 
     public String getRemainingInput() {
@@ -91,6 +101,7 @@ public class FiniteStateAutomaton {
 	State fromS = getState(from);
 	State toS = getState(to);
 	fromS.nextState.put(c,toS);
+	legalChars.add(c);
     }
 
     @Override
@@ -116,53 +127,105 @@ public class FiniteStateAutomaton {
 	return this.toString().hashCode();
     }
 
-    public Token nextToken() {
+    public void debuggingOutput(String prefix) {
+	if (debug) {
+	    String s = prefix;
+	    if (input!=null && pos >= 0 && pos < input.length()) {
+		s += "c='" + input.charAt(pos) + "'";
+	    }
+	    s +=  " currState=" + (currState==null?"null":currState.num);
+	    s +=  " nextState=" + (nextState==null?"null":nextState.num);
+	    s +=  " input=" + (input==null?"null":"\"" + input+ "\"");
+	    s +=  " pos=" + pos + " accumulatedToken=" + accumulatedToken;
+	    System.out.println(s);
+	}
+    }
 
-	if (this.getRemainingInput().equals(""))
-	    return null;
-
-	State startState = states.get(0);
-	State currState = startState;
-
-	String accumulatedToken = "";
-	
-	if (currState==null) {
+    public void resetToStart() {
+	this.startState = states.get(0);
+	this.currState = startState;
+	this.accumulatedToken = "";
+	if (this.currState==null) {
 	    throw new IllegalStateException("FSA instance does not have a start state (state 0) defined.");
 	}
+    }
 
-	State nextState = currState.nextState.get(this.input.charAt(this.pos));
+    private char currChar() {
+	if (this.input == null || pos >= this.input.length() ) {
+	    throw new IllegalStateException("current character is undefined");
+	}
+	return this.input.charAt(pos);
+    }
 
-	if (nextState == null) {
-	    // No transition for first character.  Emit error token.
-	    String s = "" + this.input.charAt(this.pos);
-	    Token retVal = new ErrorToken(s);
-	    this.pos++;
-	    return retVal;			    
+    public Token nextToken() {
+
+	debuggingOutput("top of nextToken: ");
+
+	if (this.input == null) {
+	    throw new IllegalStateException("must call setInput before calling nextToken");
+	}
+		
+	if (this.getRemainingInput().equals("")) {
+	    return null;
 	}
 
-	accumulatedToken += this.input.charAt(this.pos);
+	if (this.currState==null) {
+	    throw new IllegalStateException("No current state; add a state 0, and call setInput");
+	}
+
+	this.nextState = this.currState.nextState.get(currChar());
+
+	if (this.nextState == null) {
+	    // No transition for current character.
+	    // Emit error token, consuming current character
+	    String s = "" + currChar();
+	    Token t = new ErrorToken(s);
+	    this.pos++;
+	    resetToStart();	    
+	    return t;			    
+	}
+
+	// Otherwise, we have a transition for this character.
+	// As long as we continue to have a next state,
+	// add this character to the token, and go to that state
+
+	debuggingOutput("nextToken, before while loop: ");
 	
-	while (nextState != null && pos < this.input.length()) {
-	    currState = nextState;
-	    this.pos++;
-	    if ( pos < this.input.length() ) {
-		nextState = currState.nextState.get(this.input.charAt(this.pos));
+	while (this.nextState != null) {	    
+	    this.accumulatedToken += currChar();
+	    this.currState = this.nextState; // advance the state
+	    this.pos++;                      // consume the character
+	    debuggingOutput("nextToken, top of while loop: ");
+	    
+	    if ( this.pos >= this.input.length() ) {
+		// If we've reached the end, don't look at the character
+		// There is no transition we can make
+		this.nextState = null; 
 	    } else {
-		nextState = null;
-	    }
-	    if (nextState != null) {
-		accumulatedToken += this.input.charAt(this.pos);
+		this.nextState = this.currState.nextState.get(currChar());
 	    }
 	}
 
+	debuggingOutput("nextToken, after while loop: ");
+	
 	if (currState.tm != null) {
-	    return currState.tm.makeToken(accumulatedToken.trim());
+	    Token t = currState.tm.makeToken(accumulatedToken.trim());
+	    resetToStart();
+	    return t;
 	}
 
 	if (!accumulatedToken.trim().equals("")) {
-	    return new ErrorToken(accumulatedToken.trim());
+	    Token t = new ErrorToken(accumulatedToken.trim());
+	    resetToStart();
+	    return t;
+	} else if (this.pos < input.length() && !legalChars.contains(currChar()) ) {
+	    Token t = new ErrorToken("" + currChar());
+	    pos ++;
+	    resetToStart();
+	    return t;
 	}
-	
+
+	resetToStart();	
 	return null;
     }
 }

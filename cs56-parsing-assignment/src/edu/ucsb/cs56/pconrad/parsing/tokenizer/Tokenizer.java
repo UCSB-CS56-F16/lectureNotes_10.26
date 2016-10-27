@@ -16,21 +16,10 @@ public class Tokenizer {
 	fsa.addState(0);
 	fsa.addState(1, s -> new IntToken(s) );
 	fsa.addState(2, s -> new PlusToken() );
-	fsa.addState(3, new MinusTokenMaker());
-	fsa.addState(4, new TimesTokenMaker());
-	fsa.addState(5, new DivideTokenMaker());
-
-	// Making all of these little TokenMaker classes is getting tedious.
-	// Another way is with anonymous classes
-	
-	fsa.addState(6, new TokenMaker() {
-		public Token makeToken(String s) {
-		    return new LParenToken();
-		}		
-	    } );
-
-	// An even better way is a LambdaFunction
-	
+	fsa.addState(3, s -> new MinusToken() );
+	fsa.addState(4, s -> new TimesToken() );
+	fsa.addState(5, s -> new DivideToken() );
+	fsa.addState(6, s -> new LParenToken() );
 	fsa.addState(7, s -> new RParenToken());
 
 	fsa.addTransition(' ',0,0);
@@ -66,9 +55,6 @@ public class Tokenizer {
 	}
 
 	return tokens;
-
-
-	
     }
     
     public static Token [] tokenizeToArray (String input) {
@@ -78,6 +64,7 @@ public class Tokenizer {
     }
 
     public static void main(String [] args) {
+	// FiniteStateAutomaton.debug = true;
 	String input="2+2";
 	if (args.length>0) input = args[0];
 	System.out.println( new Tokenizer(input).tokenize());

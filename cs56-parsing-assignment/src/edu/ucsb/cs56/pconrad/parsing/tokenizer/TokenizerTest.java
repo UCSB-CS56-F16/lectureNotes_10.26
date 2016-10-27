@@ -13,6 +13,56 @@ public class TokenizerTest {
                           Tokenizer.tokenizeToArray("$"));
     }
 
+
+    @Test
+    public void testOneValidFollowedByOneErrorToken() {
+        assertArrayEquals(new Token[] {
+		new IntToken("2"),
+		new ErrorToken("$")
+	    },
+                          Tokenizer.tokenizeToArray("2$"));
+    }
+
+    @Test
+    public void testTwoPlusTwoEquals() {
+        assertArrayEquals(new Token[] {
+		new IntToken("2"),
+		new PlusToken(),
+		new IntToken("2"),
+		new ErrorToken("=")
+	    },
+	    Tokenizer.tokenizeToArray("2+2="));
+    }
+
+    @Test
+    public void testTwoPlusTwoEqualsWithSpace() {
+        assertArrayEquals(new Token[] {
+		new IntToken("2"),
+		new PlusToken(),
+		new IntToken("2"),
+		new ErrorToken("=")
+	    },
+	    Tokenizer.tokenizeToArray(" 2 + 2 = "));
+    }
+
+    @Test
+    public void testInterleavedIllegalCharsAndWhiteSpace() {
+        assertArrayEquals(new Token[] {
+		new ErrorToken("a"),
+		new ErrorToken("b"),
+		new ErrorToken("c"),
+		new ErrorToken("d"),
+		new ErrorToken("e"),
+		new ErrorToken("f"),
+		new ErrorToken("g"),
+		new ErrorToken("h"),
+		new ErrorToken("i"),
+	    },
+	    Tokenizer.tokenizeToArray(" ab c d ef ghi "));
+    }
+
+
+    
     @Test
     public void testSingleDigitIntToken() {
         assertArrayEquals(new Token[] { new IntToken("0") },

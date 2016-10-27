@@ -44,6 +44,7 @@ public class Main {
     
     public static void main(String[] args) {
 	final Scanner input = new Scanner(System.in);
+	// FiniteStateAutomaton.debug = true;
 	while (input.hasNextLine() &&
                !handleInput(input.nextLine())) {}
     }
