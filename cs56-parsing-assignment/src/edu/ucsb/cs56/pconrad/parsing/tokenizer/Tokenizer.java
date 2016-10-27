@@ -1,6 +1,15 @@
 package edu.ucsb.cs56.pconrad.parsing.tokenizer;
 
+
 import java.util.ArrayList;
+
+/**
+   A simple tokenizer based on a Finite State Automaton
+
+   @author Phill Conrad
+   @see FiniteStateAutomaton
+
+ */
 
 public class Tokenizer {
 
@@ -9,7 +18,14 @@ public class Tokenizer {
     public Tokenizer(String input) {
 	this.input = input;
     }
-    
+
+    /**
+       Creates a specific instance of FiniteStateAutomaton with the
+       states and transitions needed to parse the language implemented
+       by this arithmetic expression evaluator.
+
+       @return an instance of <code>FiniteStateAutomaton</code> that can be used to tokenize a string
+     */
     public static FiniteStateAutomaton makeFSA() {
 
 	FiniteStateAutomaton fsa = new FiniteStateAutomaton();
@@ -41,7 +57,11 @@ public class Tokenizer {
 	return fsa;
     }
 
-
+    /**
+       Convert the input for this tokenizer into a sequence of tokens
+       @return list of tokens
+     */
+    
     public ArrayList<Token> tokenize () {
 	FiniteStateAutomaton fsa = makeFSA();
 	fsa.setInput(input);
@@ -56,6 +76,15 @@ public class Tokenizer {
 
 	return tokens;
     }
+
+    /**
+
+       Convenience method for use in testing that takes input as a string,
+       and returns a plain old java array of Token objects
+
+       @param input string
+       @return array of tokens
+    */
     
     public static Token [] tokenizeToArray (String input) {
 	Tokenizer t = new Tokenizer(input);
@@ -63,6 +92,12 @@ public class Tokenizer {
 	return tokens.toArray(new Token [tokens.size()]);
     }
 
+    /** main method that can be used for interactive testing of the 
+	tokenizer.   Tokenizes hard coded string <code>"2+2"</code> unless
+	a command line argument is passed, in which case it parses that.
+
+	@param args Command line arguments, where arg[0] is the string to parse, if present
+    */
     public static void main(String [] args) {
 	// FiniteStateAutomaton.debug = true;
 	String input="2+2";

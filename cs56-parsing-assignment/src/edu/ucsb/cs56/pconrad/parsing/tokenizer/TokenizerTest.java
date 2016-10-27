@@ -7,9 +7,11 @@ import org.junit.Test;
 
 public class TokenizerTest {
 
+    private TokenFactory tf = new TokenFactory();
+    
     @Test
     public void testOneErrorToken() {
-        assertArrayEquals(new Token[] { new ErrorToken("$") },
+        assertArrayEquals(new Token[] { tf.makeErrorToken("$") },
                           Tokenizer.tokenizeToArray("$"));
     }
 
@@ -17,8 +19,8 @@ public class TokenizerTest {
     @Test
     public void testOneValidFollowedByOneErrorToken() {
         assertArrayEquals(new Token[] {
-		new IntToken("2"),
-		new ErrorToken("$")
+		tf.makeIntToken("2"),
+		tf.makeErrorToken("$")
 	    },
                           Tokenizer.tokenizeToArray("2$"));
     }
@@ -26,10 +28,10 @@ public class TokenizerTest {
     @Test
     public void testTwoPlusTwoEquals() {
         assertArrayEquals(new Token[] {
-		new IntToken("2"),
-		new PlusToken(),
-		new IntToken("2"),
-		new ErrorToken("=")
+		tf.makeIntToken("2"),
+		tf.makePlusToken(),
+		tf.makeIntToken("2"),
+		tf.makeErrorToken("=")
 	    },
 	    Tokenizer.tokenizeToArray("2+2="));
     }
@@ -37,10 +39,10 @@ public class TokenizerTest {
     @Test
     public void testTwoPlusTwoEqualsWithSpace() {
         assertArrayEquals(new Token[] {
-		new IntToken("2"),
-		new PlusToken(),
-		new IntToken("2"),
-		new ErrorToken("=")
+		tf.makeIntToken("2"),
+		tf.makePlusToken(),
+		tf.makeIntToken("2"),
+		tf.makeErrorToken("=")
 	    },
 	    Tokenizer.tokenizeToArray(" 2 + 2 = "));
     }
@@ -48,15 +50,15 @@ public class TokenizerTest {
     @Test
     public void testInterleavedIllegalCharsAndWhiteSpace() {
         assertArrayEquals(new Token[] {
-		new ErrorToken("a"),
-		new ErrorToken("b"),
-		new ErrorToken("c"),
-		new ErrorToken("d"),
-		new ErrorToken("e"),
-		new ErrorToken("f"),
-		new ErrorToken("g"),
-		new ErrorToken("h"),
-		new ErrorToken("i"),
+		tf.makeErrorToken("a"),
+		tf.makeErrorToken("b"),
+		tf.makeErrorToken("c"),
+		tf.makeErrorToken("d"),
+		tf.makeErrorToken("e"),
+		tf.makeErrorToken("f"),
+		tf.makeErrorToken("g"),
+		tf.makeErrorToken("h"),
+		tf.makeErrorToken("i"),
 	    },
 	    Tokenizer.tokenizeToArray(" ab c d ef ghi "));
     }
@@ -65,23 +67,23 @@ public class TokenizerTest {
     
     @Test
     public void testSingleDigitIntToken() {
-        assertArrayEquals(new Token[] { new IntToken("0") },
+        assertArrayEquals(new Token[] { tf.makeIntToken("0") },
                           Tokenizer.tokenizeToArray("0"));
     }
 
 
     @Test
     public void testTwoDigitIntToken() {
-        assertArrayEquals(new Token[] { new IntToken("12") },
+        assertArrayEquals(new Token[] { tf.makeIntToken("12") },
                           Tokenizer.tokenizeToArray("12"));
     }
 
     @Test
     public void testTwoPlusTwo() {
         assertArrayEquals(new Token[] {
-		new IntToken("2"),
-		new PlusToken(),
-		new IntToken("2")
+		tf.makeIntToken("2"),
+		tf.makePlusToken(),
+		tf.makeIntToken("2")
 	    },
 	    Tokenizer.tokenizeToArray("2+2"));
     }
@@ -90,9 +92,9 @@ public class TokenizerTest {
     @Test
     public void testTwoPlusTwoWithWhiteSpace() {
         assertArrayEquals(new Token[] {
-		new IntToken("2"),
-		new PlusToken(),
-		new IntToken("2")
+		tf.makeIntToken("2"),
+		tf.makePlusToken(),
+		tf.makeIntToken("2")
 	    },
 	    Tokenizer.tokenizeToArray(" 2 + 2 "));
     }
@@ -100,15 +102,15 @@ public class TokenizerTest {
     @Test
     public void twoDigitArithmeticMixed() {
         assertArrayEquals(new Token[] {
-		new IntToken("12"),
-		new PlusToken(),
-		new IntToken("34"),
-		new TimesToken(),
-		new IntToken("56"),
-		new MinusToken(),
-		new IntToken("78"),
-		new DivideToken(),
-		new IntToken("90"),
+		tf.makeIntToken("12"),
+		tf.makePlusToken(),
+		tf.makeIntToken("34"),
+		tf.makeTimesToken(),
+		tf.makeIntToken("56"),
+		tf.makeMinusToken(),
+		tf.makeIntToken("78"),
+		tf.makeDivideToken(),
+		tf.makeIntToken("90"),
 	    },
 	    Tokenizer.tokenizeToArray(" 12  + 34*56 -78/90 "));
     }
@@ -116,15 +118,15 @@ public class TokenizerTest {
     @Test
     public void fullSetNoWhiteSpace() {
         assertArrayEquals(new Token[] {
-		new IntToken("1234"),
-		new PlusToken(),
-		new TimesToken(),
-		new MinusToken(),
-		new IntToken("5678"),		
-		new DivideToken(),
-		new LParenToken(),
-		new RParenToken(),
-		new IntToken("3333"),		
+		tf.makeIntToken("1234"),
+		tf.makePlusToken(),
+		tf.makeTimesToken(),
+		tf.makeMinusToken(),
+		tf.makeIntToken("5678"),		
+		tf.makeDivideToken(),
+		tf.makeLParenToken(),
+		tf.makeRParenToken(),
+		tf.makeIntToken("3333"),		
 	    },
 	    Tokenizer.tokenizeToArray("1234+*-5678/()3333"));
     }
@@ -132,16 +134,16 @@ public class TokenizerTest {
     @Test
     public void fullSetLotsOfWhiteSpace() {
         assertArrayEquals(new Token[] {
-		new IntToken("12"),
-		new IntToken("34"),
-		new PlusToken(),
-		new TimesToken(),
-		new MinusToken(),
-		new IntToken("5678"),		
-		new DivideToken(),
-		new LParenToken(),
-		new RParenToken(),
-		new IntToken("3333"),		
+		tf.makeIntToken("12"),
+		tf.makeIntToken("34"),
+		tf.makePlusToken(),
+		tf.makeTimesToken(),
+		tf.makeMinusToken(),
+		tf.makeIntToken("5678"),		
+		tf.makeDivideToken(),
+		tf.makeLParenToken(),
+		tf.makeRParenToken(),
+		tf.makeIntToken("3333"),		
 	    },
 	    Tokenizer.tokenizeToArray(" 12 34 + *  -   5678  / ( )  3333  "));
     }
