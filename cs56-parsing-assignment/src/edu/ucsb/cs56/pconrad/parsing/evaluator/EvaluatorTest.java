@@ -16,7 +16,7 @@ import org.junit.Test;
  */ 
 
 
-public class TestEvaluator {
+public class EvaluatorTest {
     public int evaluate(final AST ast) throws EvaluatorException {
 	return DefaultInterpreterInterface.DEFAULT.evaluate(ast);
     }

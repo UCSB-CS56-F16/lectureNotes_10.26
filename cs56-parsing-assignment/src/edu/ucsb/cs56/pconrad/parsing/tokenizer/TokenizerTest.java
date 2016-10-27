@@ -148,6 +148,55 @@ public class TokenizerTest {
 	    Tokenizer.tokenizeToArray(" 12 34 + *  -   5678  / ( )  3333  "));
     }
 
+    @Test
+    public void testOneToken() {
+	assertArrayEquals(new Token[] { tf.makePlusToken() },
+			  Tokenizer.tokenizeToArray("+"));
+    }
 
+        @Test
+	public void testTwoSameTokens() {
+	    assertArrayEquals(new Token[] { tf.makePlusToken(),
+					    tf.makePlusToken() },
+		Tokenizer.tokenizeToArray("++"));
+	}
 
+        @Test
+	public void testSingleWhitespace() {
+	    assertArrayEquals(new Token[] { },
+			      Tokenizer.tokenizeToArray(" "));
+	}
+
+        @Test
+	public void testSingleDigit() {
+	    assertArrayEquals(new Token[] { tf.makeIntToken("1") },
+			      Tokenizer.tokenizeToArray("1"));
+	}
+
+        @Test
+	public void testTwoDigit() {
+	    assertArrayEquals(new Token[] { tf.makeIntToken("12") },
+			      Tokenizer.tokenizeToArray("12"));
+	}
+
+        @Test
+	public void testBigFatUglyTestFromLecture() {
+	    assertArrayEquals(new Token[] {
+		    tf.makePlusToken(),
+		    tf.makeMinusToken(),
+		    tf.makePlusToken(),
+		    tf.makeIntToken("12"),
+		    tf.makePlusToken()
+		},
+		Tokenizer.tokenizeToArray("+-+12+"));
+	}
+
+        @Test
+	public void testInvalidSingleToken() {
+	    assertArrayEquals(new Token[] {
+		    tf.makeErrorToken("c"),
+		},
+		Tokenizer.tokenizeToArray("c"));
+	}
+    
 }

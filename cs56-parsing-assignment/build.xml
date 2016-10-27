@@ -76,8 +76,6 @@
       <batchtest fork="yes">
 	<fileset dir="src">
           <include name="**/*Test.java"/>
-	  <include name="**/TestParser.java"/>
-	  <include name="**/TestEvaluator.java"/>
 	  </fileset>
 	</batchtest>
 	<formatter type="brief" usefile="false" />

@@ -17,7 +17,7 @@ import java.io.IOException;
  Tests going from a string to an AST
  */ 
 
-public class TestParser {
+public class ParserTest {
     public static AST parse(final String input)
 	throws TokenizerException, ParserException {
 	return DEFAULT.parse(DEFAULT.tokenize(input));
@@ -127,5 +127,5 @@ public class TestParser {
         throws TokenizerException, ParserException {
         parseExpectFailure("(5 +)");
     }
-} // TestParser
+} // ParserTest
 
