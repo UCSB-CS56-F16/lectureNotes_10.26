@@ -1,12 +1,19 @@
 package edu.ucsb.cs56.pconrad.parsing;
 
-import edu.ucsb.cs56.pconrad.parsing.syntax.*;
-import edu.ucsb.cs56.pconrad.parsing.tokenizer.*;
-import edu.ucsb.cs56.pconrad.parsing.parser.*;
-
+import edu.ucsb.cs56.pconrad.parsing.tokenizer.TokenizerException;
+import edu.ucsb.cs56.pconrad.parsing.parser.ParserException;
 import edu.ucsb.cs56.pconrad.parsing.evaluator.EvaluatorException;
 
 import java.util.Scanner;
+
+/* 
+   Class with a default main routine that takes expressions from standard input
+   and interprets them, until uses presses q to quit.
+
+   @author Kyle Dewey, Phill Conrad
+   
+*/
+
 
 public class Main {
     public static int evaluate(final String input)
@@ -45,6 +52,7 @@ public class Main {
     public static void main(String[] args) {
 	final Scanner input = new Scanner(System.in);
 	// FiniteStateAutomaton.debug = true;
+	System.out.println("Enter expressions, or q to quit.");
 	while (input.hasNextLine() &&
                !handleInput(input.nextLine())) {}
     }
