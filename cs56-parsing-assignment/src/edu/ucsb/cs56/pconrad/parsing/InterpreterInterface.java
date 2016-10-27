@@ -1,11 +1,15 @@
 package edu.ucsb.cs56.pconrad.parsing;
 
-import edu.ucsb.cs56.pconrad.parsing.syntax.*;
-import edu.ucsb.cs56.pconrad.parsing.tokenizer.*;
-import edu.ucsb.cs56.pconrad.parsing.parser.*;
+import edu.ucsb.cs56.pconrad.parsing.syntax.AST;
+import edu.ucsb.cs56.pconrad.parsing.tokenizer.Token;
+import edu.ucsb.cs56.pconrad.parsing.tokenizer.TokenizerException;
+import edu.ucsb.cs56.pconrad.parsing.parser.ParserException;
 import edu.ucsb.cs56.pconrad.parsing.evaluator.EvaluatorException;
 
 import java.util.ArrayList;
+
+
+
 
 public abstract class InterpreterInterface {
     public abstract ArrayList<Token> tokenize(String input) throws TokenizerException;
